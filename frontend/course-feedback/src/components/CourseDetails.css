@@ -1,0 +1,143 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 0;
+}
+
+.course-details {
+  max-width: 800px;
+  margin: 40px auto;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+}
+
+.course-details h2 {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.course-details p {
+  font-size: 1.1rem;
+  color: #555;
+  margin-top: 10px;
+}
+
+.course-meta p {
+  font-size: 1.2rem;
+  margin: 10px 0;
+}
+
+.rating {
+  margin-top: 15px;
+  font-size: 1.2rem;
+}
+
+.rating .stars {
+  color: #ffcd00; /* Gold color for stars */
+  font-size: 1.5rem;
+  margin-left: 10px;
+}
+
+.comments-section {
+  margin-top: 30px;
+}
+
+.comments-section h3 {
+  font-size: 1.8rem;
+  color: #444;
+  margin-bottom: 15px;
+}
+
+.comments-list {
+  list-style: none;
+  padding: 0;
+}
+
+.comment {
+  background-color: #f4f4f4;
+  margin-bottom: 15px;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.comment strong {
+  color: #007bff;
+}
+
+.comment-input {
+  display: flex;
+  flex-direction: column;
+}
+
+.comment-input input {
+  padding: 10px;
+  font-size: 1rem;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.comment-input button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.comment-input button:hover {
+  background-color: #0056b3;
+}
+.like-buttons {
+  margin-top: 10px;
+}
+
+.like-buttons button {
+  background-color: transparent;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: transform 0.3s;
+}
+
+.like-buttons button:hover {
+  transform: scale(1.2);
+}
+
+.like-buttons button.liked {
+  color: #007bff; /* Blue color for liked state */
+}
+
+.like-buttons button.disliked {
+  color: #ff4d4d; /* Red color for disliked state */
+}
+
+.comment-input input {
+  padding: 10px;
+  font-size: 1rem;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 80%;
+}
+
+.comment-input button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.comment-input button:hover {
+  background-color: #0056b3;
+}

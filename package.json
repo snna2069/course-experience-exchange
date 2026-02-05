@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+
+  "dependencies": {
+    "firebase": "^11.0.2",
+    "kafka-node": "^5.0.0"
+  }
+}
