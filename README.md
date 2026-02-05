@@ -1,9 +1,5 @@
 # COURSE EXPERIENCE EXCHANGE
 
-**Team Members:**  
-- Sneha Nagaraju  
-- Rakesh Vijay Kumar  
-
 ## Project Description
 
 The "Course Experience Exchange" is a comprehensive, web-based platform aimed at helping students make well-informed decisions regarding their academic courses. By enabling the sharing of detailed reviews, rating and feedback, the platform seeks to improve the educational experience for students and foster a culture of continuous improvement in academia.
