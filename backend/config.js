@@ -33,7 +33,5 @@ module.exports = {
   PORT: parsePort(process.env.PORT, 5000),
   MONGODB_URI,
   FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:3000',
-  // Reserved for future JWT-based authentication; not yet used by the
-  // active /api/auth routes.
   JWT_SECRET: process.env.JWT_SECRET || null,
 };

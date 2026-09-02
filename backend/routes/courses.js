@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const Course = require('../models/Course');
 const Comment = require('../models/Comment');
+const Rating = require('../models/Rating');
+const requireAuth = require('../middleware/auth');
+const optionalAuth = require('../middleware/optionalAuth');
 
 // Get all courses with optional filters for department and graduation level
 router.get('/', async (req, res) => {
@@ -15,7 +18,7 @@ router.get('/', async (req, res) => {
     if (gradLevel) filters.gradLevel = gradLevel;
 
     const courses = await Course.find(filters)
-      .populate('comments')
+      .populate({ path: 'comments', populate: { path: 'user', select: 'name email' } })
       .skip((pageNum - 1) * limitNum)
       .limit(limitNum); // Pagination applied
 
@@ -54,42 +57,52 @@ router.get('/suggestions', async (req, res) => {
 });
 
 // Get a course by ID with its comments
-router.get('/:courseId', async (req, res) => {
+router.get('/:courseId', optionalAuth, async (req, res) => {
   try {
-    const course = await Course.findById(req.params.courseId).populate('comments');
+    const course = await Course.findById(req.params.courseId)
+      .populate({ path: 'comments', populate: { path: 'user', select: 'name email' } });
     if (!course) {
       return res.status(404).json({ message: 'Course not found' });
     }
-    res.json(course); // Send course details along with comments
+    const userRating = req.user
+      ? await Rating.findOne({ course: course._id, user: req.user._id })
+      : null;
+    res.json({
+      ...course.toObject(),
+      userRating: userRating ? userRating.value : null,
+    });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching course' });
   }
 });
 
 // Add a comment to a course
-router.post('/:courseId/comments', async (req, res) => {
-  const { text, username } = req.body;
-  const newComment = new Comment({ text, username });
+router.post('/:courseId/comments', requireAuth, async (req, res) => {
+  const { text } = req.body;
+  if (!text || !text.trim()) {
+    return res.status(400).json({ message: 'Comment text is required' });
+  }
 
   try {
-    await newComment.save(); // Save the new comment
-
     const course = await Course.findById(req.params.courseId);
     if (!course) {
       return res.status(404).json({ message: 'Course not found' });
     }
 
-    course.comments.push(newComment); // Add the comment to the course
+    const newComment = new Comment({ text: text.trim(), user: req.user._id });
+    await newComment.save();
+    course.comments.push(newComment._id);
     await course.save(); // Save the updated course
 
-    res.status(201).json(newComment); // Respond with the new comment
+    await newComment.populate('user', 'name email');
+    res.status(201).json(newComment);
   } catch (error) {
     res.status(400).json({ message: 'Error adding comment' });
   }
 });
 
 // New API endpoint for submitting ratings (like/dislike)
-router.post('/:courseId/rate', async (req, res) => {
+router.post('/:courseId/rate', requireAuth, async (req, res) => {
   const { rating } = req.body; // Expected values: 1 (like), -1 (dislike)
   if (rating !== 1 && rating !== -1) {
     return res.status(400).json({ message: 'Invalid rating' });
@@ -101,12 +114,27 @@ router.post('/:courseId/rate', async (req, res) => {
       return res.status(404).json({ message: 'Course not found' });
     }
 
-    // Update the course rating (for simplicity, we are storing the latest user rating)
-    // You can modify this logic if you need to track multiple user ratings
-    course.userRating = rating;
+    const previousRating = await Rating.findOne({ course: course._id, user: req.user._id });
+    if (previousRating) {
+      if (previousRating.value === rating) {
+        await Rating.deleteOne({ _id: previousRating._id });
+        const countField = rating === 1 ? 'likeCount' : 'dislikeCount';
+        course[countField] = Math.max(0, (course[countField] || 0) - 1);
+      } else {
+        previousRating.value = rating;
+        await previousRating.save();
+        course.likeCount = Math.max(0, (course.likeCount || 0) + (rating === 1 ? 1 : -1));
+        course.dislikeCount = Math.max(0, (course.dislikeCount || 0) + (rating === -1 ? 1 : -1));
+      }
+    } else {
+      await Rating.create({ course: course._id, user: req.user._id, value: rating });
+      const countField = rating === 1 ? 'likeCount' : 'dislikeCount';
+      course[countField] = (course[countField] || 0) + 1;
+    }
 
     await course.save(); // Save updated course with rating
-    res.json(course); // Return the updated course details
+    const currentRating = await Rating.findOne({ course: course._id, user: req.user._id });
+    res.json({ course, userRating: currentRating ? currentRating.value : null });
   } catch (error) {
     res.status(500).json({ message: 'Error submitting rating' });
   }

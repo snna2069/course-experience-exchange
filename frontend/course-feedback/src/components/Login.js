@@ -15,7 +15,7 @@ const LoginPage = () => {
     setError('');
     try {
       const response = await api.post('/auth/login', { email, password });
-      login(response.data.user);
+      login(response.data.user, response.data.token);
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
     }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../api/api';
+import { useAuth } from '../context/AuthContext';
 import './CourseDetails.css';
 
 const CourseDetails = () => {
@@ -11,6 +12,7 @@ const CourseDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [userRating, setUserRating] = useState(null); // to track user rating
+  const { user } = useAuth();
 
   useEffect(() => {
     if (!id) {
@@ -38,7 +40,6 @@ const CourseDetails = () => {
       api
         .post(`/courses/${id}/comments`, {
           text: newComment,
-          username: 'Anonymous',
         })
         .then((response) => {
           setComments((prevComments) => [...prevComments, response.data]);
@@ -57,7 +58,8 @@ const CourseDetails = () => {
     api
       .post(`/courses/${id}/rate`, { rating })
       .then((response) => {
-        setCourse(response.data); // Update the course details after rating
+        setCourse(response.data.course); // Update the course details after rating
+        setUserRating(response.data.userRating);
       })
       .catch(() => {
         setError('Error submitting rating.');
@@ -92,6 +94,7 @@ const CourseDetails = () => {
         </div>
         <div className="like-buttons">
           <button
+            disabled={!user}
             className={userRating === 1 ? 'liked' : ''}
             onClick={() => handleRating(1)}
             title="Like"
@@ -99,6 +102,7 @@ const CourseDetails = () => {
             👍
           </button>
           <button
+            disabled={!user}
             className={userRating === -1 ? 'disliked' : ''}
             onClick={() => handleRating(-1)}
             title="Dislike"
@@ -116,7 +120,7 @@ const CourseDetails = () => {
           <ul className="comments-list">
             {comments.map((comment) => (
               <li key={comment._id} className="comment">
-                <strong>{comment.username}</strong>: {comment.text}
+                <strong>{comment.user?.name || 'User'}</strong>: {comment.text}
               </li>
             ))}
           </ul>
@@ -128,7 +132,8 @@ const CourseDetails = () => {
             onChange={(e) => setNewComment(e.target.value)}
             placeholder="Write a comment..."
           />
-          <button onClick={handleCommentSubmit}>Submit</button>
+          <button onClick={handleCommentSubmit} disabled={!user}>Submit</button>
+          {!user && <p>Log in to comment or rate a course.</p>}
         </div>
       </div>
     </div>

@@ -1,11 +1,17 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const config = require('../config');
 const router = express.Router();
 
 // Registration Route
 router.post('/register', async (req, res) => {
   const { name, email, password } = req.body;
+
+  if (!name || !email || !password) {
+    return res.status(400).json({ message: 'Name, email, and password are required' });
+  }
 
   try {
     const existingUser = await User.findOne({ email });
@@ -25,6 +31,10 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
+  if (!email || !password) {
+    return res.status(400).json({ message: 'Email and password are required' });
+  }
+
   try {
     const user = await User.findOne({ email });
     if (!user) {
@@ -36,14 +46,26 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
 
-    // Return only non-sensitive user fields — never the password hash.
+    if (!config.JWT_SECRET) {
+      return res.status(500).json({ message: 'Authentication is not configured' });
+    }
+
+    const token = jwt.sign({ sub: user._id.toString() }, config.JWT_SECRET, {
+      expiresIn: '7d',
+    });
+
     res.status(200).json({
       message: 'Login successful',
+      token,
       user: { id: user._id, name: user.name, email: user.email },
     });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
+});
+
+router.get('/me', require('../middleware/auth'), (req, res) => {
+  res.json({ user: req.user });
 });
 
 module.exports = router;
