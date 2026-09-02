@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/api';
 import './Login.css';
@@ -7,7 +8,6 @@ const LoginPage = () => {
   const { login, logout, user } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isSignUp, setIsSignUp] = useState(false);
   const [error, setError] = useState('');
 
   const handleLogin = async (e) => {
@@ -19,16 +19,6 @@ const LoginPage = () => {
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
     }
-  };
-
-  const handleSignUp = (e) => {
-    e.preventDefault();
-    // NOTE: this inline sign-up toggle is a leftover simulated flow and does
-    // not call the backend. The canonical registration screen is Signup.js
-    // (routed at /signup), which calls POST /api/auth/register.
-    const newUser = { email, password };
-    login(newUser);
-    alert('Sign Up successful! You are now logged in.');
   };
 
   const handleLogout = () => {
@@ -50,11 +40,11 @@ const LoginPage = () => {
         <div className="login-page-container">
           <div className="login-form-container">
             <h2>Course Experience Exchange</h2>
-            <p>{isSignUp ? 'Sign up to start exploring!' : 'Log in to continue'}</p>
+            <p>Log in to continue</p>
 
             {error && <p style={{ color: 'red' }}>{error}</p>}
 
-            <form onSubmit={isSignUp ? handleSignUp : handleLogin}>
+            <form onSubmit={handleLogin}>
               <div className="input-container">
                 <label htmlFor="email">Email Address</label>
                 <input
@@ -77,30 +67,16 @@ const LoginPage = () => {
                   required
                 />
               </div>
-              {isSignUp && (
-                <div className="input-container">
-                  <label htmlFor="confirmPassword">Confirm Password</label>
-                  <input
-                    type="password"
-                    id="confirmPassword"
-                    placeholder="Confirm your password"
-                    required
-                  />
-                </div>
-              )}
               <button type="submit" className="login-btn">
-                {isSignUp ? 'Sign Up' : 'Login'}
+                Login
               </button>
             </form>
 
             <div className="toggle-form">
-              <p>{isSignUp ? 'Already have an account?' : "Don't have an account?"}</p>
-              <button
-                className="toggle-btn"
-                onClick={() => setIsSignUp(!isSignUp)}
-              >
-                {isSignUp ? 'Login here' : 'Sign Up'}
-              </button>
+              <p>Don't have an account?</p>
+              <Link to="/signup" className="toggle-btn">
+                Sign Up
+              </Link>
             </div>
           </div>
         </div>

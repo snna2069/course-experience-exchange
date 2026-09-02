@@ -58,12 +58,10 @@ Express backend (backend/server.js -> backend/app.js)
 MongoDB (mongodb://localhost:27017/courseexperienceexchange)
 ```
 
-PostgreSQL, Kafka, and Firebase Authentication code also exist in this
-repository but are **not** part of the active path. They are preserved for
-future evaluation and are marked as legacy/inactive in the source files
-(`backend/index.js`, `backend/kafka/`, `kafka/`, `backend/models/database.js`,
-`backend/controllers/authController.js`, `backend/routes/reviews.js`,
-`database/init.sql`). Do not start them as part of normal setup.
+PostgreSQL and Kafka code also exist in this repository but are **not** part
+of the active path. They are preserved for future evaluation and are marked
+as legacy/inactive in the source files (`backend/index.js`, `backend/kafka/`,
+`kafka/`, `database/init.sql`). Do not start them as part of normal setup.
 
 ------------------------------------------------------------------------------------------------------------------
 
@@ -101,10 +99,9 @@ npm start
 
 This starts the React development server on `http://localhost:3000`.
 
-Note: `frontend/course-feedback` is the only frontend package that runs the
-application. The `frontend/package.json` at the repository root is not a
-runnable application (no source files) and should be ignored until it is
-evaluated for removal.
+Note: `frontend/course-feedback` is the only frontend package in this
+repository; the orphaned root-level `frontend/package.json` (no source
+files, superseded by this package) was removed in Phase 5.
 
 ### Optional / Not Required for the Canonical Path
 
@@ -113,5 +110,9 @@ currently wired into the active backend:
 
 - PostgreSQL (`database/init.sql`, `backend/index.js`)
 - Kafka/Zookeeper (`kafka/`, `backend/kafka/`)
-- Firebase Authentication (`backend/firebaseAdmin.js`, `backend/controllers/authController.js`)
+
+Firebase Authentication support (`firebase-admin`/`firebase` packages) was
+part of the original tech stack but has no working, reachable code path in
+this repository; the unreachable Firebase-based auth controller was removed
+in Phase 5.
 
