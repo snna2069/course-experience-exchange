@@ -24,17 +24,17 @@ The current showcase runs on curated local sample data, so the complete experien
 <table>
   <tr>
     <td align="center" width="50%">
-      <img src="./docs/screenshots/home.png" alt="CEE home page" width="380" /><br />
+      <img src="./docs/screenshots/home.png" alt="CEE home page" width="400" style="border: 1px solid #d8d3ca; border-radius: 10px;" /><br />
       <sub>Discover the catalog</sub>
     </td>
     <td align="center" width="50%">
-      <img src="./docs/screenshots/course-detail.png" alt="CEE course detail page" width="380" /><br />
+      <img src="./docs/screenshots/course-detail.png" alt="CEE course detail page" width="400" style="border: 1px solid #d8d3ca; border-radius: 10px;" /><br />
       <sub>Read the details</sub>
     </td>
   </tr>
   <tr>
     <td align="center" colspan="2">
-      <img src="./docs/screenshots/profile.png" alt="CEE profile page" width="380" /><br />
+      <img src="./docs/screenshots/profile.png" alt="CEE profile page" width="400" style="border: 1px solid #d8d3ca; border-radius: 10px;" /><br />
       <sub>Personal profile</sub>
     </td>
   </tr>
