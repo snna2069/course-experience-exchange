@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./docs/project-title.svg" alt="Course Experience Exchange animated barcode title" />
+  <img src="./docs/project-title.svg" alt="Course Experience Exchange pixel-art title" width="420" />
 </p>
 
 <p align="center">
@@ -21,13 +21,24 @@ The current showcase runs on curated local sample data, so the complete experien
 
 ## Showcase
 
-| Discover the catalog | Read the details |
-| --- | --- |
-| ![CEE home page](./docs/screenshots/home.png) | ![CEE course detail page](./docs/screenshots/course-detail.png) |
-
-| Personal profile |
-| --- |
-| ![CEE profile page](./docs/screenshots/profile.png) |
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="./docs/screenshots/home.png" alt="CEE home page" width="380" /><br />
+      <sub>Discover the catalog</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="./docs/screenshots/course-detail.png" alt="CEE course detail page" width="380" /><br />
+      <sub>Read the details</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" colspan="2">
+      <img src="./docs/screenshots/profile.png" alt="CEE profile page" width="380" /><br />
+      <sub>Personal profile</sub>
+    </td>
+  </tr>
+</table>
 
 ## Features
 
