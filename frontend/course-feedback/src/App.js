@@ -5,7 +5,7 @@ import Profile from './components/Profile';
 import CourseDetails from './components/CourseDetails';
 import Login from './components/Login';
 import Signup from './components/Signup';
-import { useAuth } from './context/AuthContext';
+import Footer from './components/Footer';
 import { courses, departments } from './data/courses';
 import './App.css';
 
@@ -75,8 +75,7 @@ function Home() {
 }
 
 function App() {
-  const { user } = useAuth();
-  return <><Header /><Routes><Route path="/" element={<Home />} /><Route path="/login" element={<Login />} /><Route path="/signup" element={<Signup />} /><Route path="/profile" element={<Profile />} /><Route path="/courses/:id" element={<CourseDetails />} /><Route path="*" element={<Home />} /></Routes><footer><span>CEE ✳</span><span>Built by students, for students.</span><span>{user ? `Signed in as ${user.name}` : 'Share your course experience'}</span></footer></>;
+  return <><Header /><Routes><Route path="/" element={<Home />} /><Route path="/login" element={<Login />} /><Route path="/signup" element={<Signup />} /><Route path="/profile" element={<Profile />} /><Route path="/courses/:id" element={<CourseDetails />} /><Route path="*" element={<Home />} /></Routes><Footer /></>;
 }
 
 export default App;
