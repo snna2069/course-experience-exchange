@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Route, Routes } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import Header from './components/Header';
@@ -9,34 +8,29 @@ import CourseDetails from './components/CourseDetails';
 import { useAuth } from './context/AuthContext';
 import Login from './components/Login';
 import Signup from './components/Signup';
-import { AuthProvider } from './context/AuthContext';
-//import ReactDOM from 'react-dom';
-
-import { createRoot } from 'react-dom/client';
-
-const rootElement = document.getElementById('root');
-const root = createRoot(rootElement);
-
+import api from './api/api';
 
 function App() {
   const [courses, setCourses] = useState([]);
+  const [error, setError] = useState('');
   const { user, logout } = useAuth();
-  const [filter, setFilter] = useState({ department: '', level: '' });
+  const [filter, setFilter] = useState({ department: '', gradLevel: '' });
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/courses')
+    api.get('/courses')
       .then(response => {
         setCourses(response.data);
       })
       .catch(error => {
         console.error('Error fetching courses:', error);
+        setError('Failed to load courses.');
       });
   }, []);
 
   const filteredCourses = courses.filter(course => {
     return (
       (filter.department === '' || course.department === filter.department) &&
-      (filter.level === '' || course.level === filter.level)
+      (filter.gradLevel === '' || course.gradLevel === filter.gradLevel)
     );
   });
 
@@ -79,7 +73,7 @@ function App() {
                 </div>
 
                 {courses.length === 0 ? (
-                  <p>No courses available. Check back later!</p>
+                  <p>{error || 'No courses available. Check back later!'}</p>
                 ) : (
                   <ul>
                     {filteredCourses.map(course => (
@@ -109,16 +103,4 @@ function App() {
   );
 }
 
-//ReactDOM.render(
-//  <AuthProvider>
-//    <App />
-//  </AuthProvider>,
-//  document.getElementById('root')
-//);
-
-root.render(
-  <AuthProvider>
-    <App />
-  </AuthProvider>
-);
 export default App;

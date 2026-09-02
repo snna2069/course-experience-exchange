@@ -1,3 +1,6 @@
+// LEGACY / INACTIVE: not mounted by app.js. Firebase authentication is not
+// part of the active authentication flow (see routes/auth.js). Preserved
+// for future evaluation.
 const admin = require("../firebaseAdmin");
 
 exports.verifyToken = async (req, res) => {

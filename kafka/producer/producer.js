@@ -1,6 +1,7 @@
+// LEGACY / INACTIVE: standalone Kafka producer/topic bootstrap script, not
+// wired into the active MongoDB/Express backend (server.js). Preserved for
+// future evaluation.
 const kafka = require("kafka-node");
-
-// Create Kafka Client
 const kafkaClient = new kafka.KafkaClient({ kafkaHost: "localhost:9092" });
 const producer = new kafka.Producer(kafkaClient);
 const admin = new kafka.Admin(kafkaClient);

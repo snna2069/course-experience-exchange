@@ -1,2 +1,7 @@
 node_modules
-backend/firebase-service-account-key.json.json 
+backend/firebase-service-account-key.json
+
+# Environment files (copy from the corresponding .env.example)
+.env
+backend/.env
+frontend/course-feedback/.env

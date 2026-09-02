@@ -2,20 +2,16 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const config = require('./config');
 const authRoutes = require('./routes/auth');
 const courseRoutes = require('./routes/courses');
 
+// NOTE: This module only configures the Express app. It does not connect to
+// the database or start the HTTP listener — that is server.js's job (single
+// startup entry point: `npm start` -> server.js -> app.listen()).
 const app = express();
-app.use(cors());
+app.use(cors({ origin: config.FRONTEND_URL }));
 app.use(bodyParser.json());
-
-// MongoDB connection (adjust with your database URL)
-mongoose.connect('mongodb://localhost:27017/courseexperienceexchange', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('MongoDB connected'))
-.catch((err) => console.log('MongoDB connection error:', err));
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -25,8 +21,16 @@ app.get('/', (req, res) => {
   res.send('Welcome to the Backend of Course Experience Exchange!!');
 });
 
-app.listen(5000, () => {
-  console.log('Server is running on http://localhost:5000/');
+// Health check: reports process liveness and current MongoDB connection
+// state without requiring a database round-trip.
+const MONGOOSE_STATES = ['disconnected', 'connected', 'connecting', 'disconnecting'];
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+    db: MONGOOSE_STATES[mongoose.connection.readyState] || 'unknown',
+  });
 });
 
 module.exports = app;

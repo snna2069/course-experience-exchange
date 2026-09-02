@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/api';
 import './CourseDetails.css';
 
 const CourseDetails = () => {
@@ -19,8 +19,8 @@ const CourseDetails = () => {
       return;
     }
 
-    axios
-      .get(`http://localhost:5000/api/courses/${id}`)
+    api
+      .get(`/courses/${id}`)
       .then((response) => {
         setCourse(response.data);
         setComments(response.data.comments || []);
@@ -35,8 +35,8 @@ const CourseDetails = () => {
 
   const handleCommentSubmit = () => {
     if (newComment) {
-      axios
-        .post(`http://localhost:5000/api/courses/${id}/comments`, {
+      api
+        .post(`/courses/${id}/comments`, {
           text: newComment,
           username: 'Anonymous',
         })
@@ -54,8 +54,8 @@ const CourseDetails = () => {
     // Update user rating when they click like or dislike
     setUserRating(rating);
 
-    axios
-      .post(`http://localhost:5000/api/courses/${id}/rate`, { rating })
+    api
+      .post(`/courses/${id}/rate`, { rating })
       .then((response) => {
         setCourse(response.data); // Update the course details after rating
       })

@@ -1,6 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
-const User = require('../models/user');
+const User = require('../models/User');
 const router = express.Router();
 
 // Registration Route
@@ -36,8 +36,11 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
 
-    // For simplicity, we return the user data on successful login
-    res.status(200).json({ message: 'Login successful', user });
+    // Return only non-sensitive user fields — never the password hash.
+    res.status(200).json({
+      message: 'Login successful',
+      user: { id: user._id, name: user.name, email: user.email },
+    });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }

@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const Course = require('../models/course');
+const Course = require('../models/Course');
 const Comment = require('../models/Comment');
 
 // Get all courses with optional filters for department and graduation level
 router.get('/', async (req, res) => {
   const { department, gradLevel, page = 1, limit = 100 } = req.query; // Add pagination
+  const pageNum = parseInt(page, 10) || 1;
+  const limitNum = parseInt(limit, 10) || 100;
 
   try {
     const filters = {};
@@ -14,12 +16,40 @@ router.get('/', async (req, res) => {
 
     const courses = await Course.find(filters)
       .populate('comments')
-      .skip((page - 1) * limit)
-      .limit(limit); // Pagination applied
+      .skip((pageNum - 1) * limitNum)
+      .limit(limitNum); // Pagination applied
 
     res.json(courses);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching courses' });
+  }
+});
+
+// New API endpoint for search suggestions
+// NOTE: must be declared before '/:courseId' below, otherwise Express would
+// match this path as a course ID lookup and never reach this handler.
+router.get('/suggestions', async (req, res) => {
+  const query = (req.query.q || '').toLowerCase(); // The query parameter for search
+
+  try {
+    // Find courses or departments that match the search query
+    const suggestions = await Course.find({
+      $or: [
+        { name: { $regex: query, $options: 'i' } }, // Case-insensitive search for course name
+        { department: { $regex: query, $options: 'i' } } // Case-insensitive search for department
+      ]
+    }).limit(10); // Limit to 10 suggestions
+
+    // Send the course names and departments as suggestions
+    res.json({
+      suggestions: suggestions.map(course => ({
+        id: course._id,
+        name: course.name,
+        department: course.department
+      }))
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching suggestions' });
   }
 });
 
@@ -79,32 +109,6 @@ router.post('/:courseId/rate', async (req, res) => {
     res.json(course); // Return the updated course details
   } catch (error) {
     res.status(500).json({ message: 'Error submitting rating' });
-  }
-});
-
-// New API endpoint for search suggestions
-router.get('/suggestions', async (req, res) => {
-  const query = req.query.q.toLowerCase(); // The query parameter for search
-
-  try {
-    // Find courses or departments that match the search query
-    const suggestions = await Course.find({
-      $or: [
-        { name: { $regex: query, $options: 'i' } }, // Case-insensitive search for course name
-        { department: { $regex: query, $options: 'i' } } // Case-insensitive search for department
-      ]
-    }).limit(10); // Limit to 10 suggestions
-
-    // Send the course names and departments as suggestions
-    res.json({
-      suggestions: suggestions.map(course => ({
-        id: course._id,
-        name: course.name,
-        department: course.department
-      }))
-    });
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching suggestions' });
   }
 });
 

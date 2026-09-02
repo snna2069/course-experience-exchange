@@ -1,3 +1,7 @@
+-- LEGACY / INACTIVE: this PostgreSQL schema supports the alternate
+-- backend/index.js implementation, which is not part of the canonical
+-- application path. The active backend (server.js) uses MongoDB models
+-- defined in backend/models/. Preserved for future evaluation.
 SET search_path TO public;
 
 CREATE TABLE courses (

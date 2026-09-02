@@ -1,3 +1,6 @@
+// LEGACY / INACTIVE: unused PostgreSQL connection pool. The active backend
+// (server.js) uses MongoDB via mongoose (see config.js, db.js). Preserved
+// for future evaluation.
 const { Pool } = require("pg");
 require("dotenv").config();
 

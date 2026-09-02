@@ -1,3 +1,6 @@
+// NOTE: Not currently used by app.js. routes/courses.js implements the
+// active course endpoints inline instead of delegating to this controller.
+// Preserved for future refactor into a controller-based structure.
 const Course = require('../models/Course');
 const Comment = require('../models/Comment');
 

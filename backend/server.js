@@ -1,16 +1,13 @@
 const app = require('./app');
-const mongoose = require('mongoose');
+const connectDB = require('./db');
 const config = require('./config');
 
-// Connect to MongoDB
-mongoose.connect(config.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log('MongoDB connected successfully');
-    startServer(config.PORT); // Start the server after successful DB connection
-  })
-  .catch((err) => {
-    console.error('MongoDB connection error:', err);
-  });
+// Connect to MongoDB, then start listening. connectDB() exits the process
+// on failure (see db.js), so startServer() only runs after a successful
+// connection.
+connectDB().then(() => {
+  startServer(config.PORT);
+});
 
 // Function to start the server with error handling
 function startServer(port) {

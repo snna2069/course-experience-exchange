@@ -1,3 +1,5 @@
+// LEGACY / INACTIVE: only used by routes/reviews.js, which is not mounted
+// by app.js. Preserved for future evaluation.
 const Review = require('../models/Review');
 const Comment = require('../models/Comment');
 

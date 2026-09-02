@@ -1,6 +1,16 @@
 // frontend/src/components/Review.js
+//
+// LEGACY / INACTIVE: this component is not imported or routed anywhere in
+// App.js, so it cannot be reached by users. It also calls
+// GET/POST /api/courses/:id/reviews, which does not exist in the active
+// backend (backend/app.js only mounts /api/auth and /api/courses; the
+// separate Review model/routes in backend/routes/reviews.js are themselves
+// unmounted — see Phase 3 legacy markers). The active, working feedback
+// feature is the Comment flow used by CourseDetails.js
+// (GET/POST /api/courses/:id/comments). Preserved for future evaluation;
+// the missing `useEffect` import below is fixed for hygiene only.
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function Review({ courseId }) {

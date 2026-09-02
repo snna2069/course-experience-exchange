@@ -1,3 +1,10 @@
+// LEGACY / INACTIVE ENTRY POINT
+// This file implements an alternate PostgreSQL + Kafka backend that is NOT
+// used by the active application. The canonical backend entry point is
+// server.js (started via `npm start`), which uses Express + MongoDB
+// (see app.js, routes/, models/). This file is preserved for future
+// evaluation but must not be wired into package.json "start" or Docker
+// CMD/command entries.
 // Importing necessary modules
 const express = require('express');
 const cors = require('cors');

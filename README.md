@@ -43,53 +43,75 @@ The "Course Experience Exchange" is a comprehensive, web-based platform aimed at
 
 ------------------------------------------------------------------------------------------------------------------
 
+## Current Canonical Architecture (Phase 2)
+
+The active, working application path is:
+
+```
+React frontend (frontend/course-feedback)
+        |
+        | REST API (http://localhost:5000)
+        v
+Express backend (backend/server.js -> backend/app.js)
+        |
+        v
+MongoDB (mongodb://localhost:27017/courseexperienceexchange)
+```
+
+PostgreSQL, Kafka, and Firebase Authentication code also exist in this
+repository but are **not** part of the active path. They are preserved for
+future evaluation and are marked as legacy/inactive in the source files
+(`backend/index.js`, `backend/kafka/`, `kafka/`, `backend/models/database.js`,
+`backend/controllers/authController.js`, `backend/routes/reviews.js`,
+`database/init.sql`). Do not start them as part of normal setup.
+
+------------------------------------------------------------------------------------------------------------------
+
 ## Installation and Deployment Instructions
 
 ### Clone the Repository
 
 ```bash
-git https://github.com/cu-csci-4253-datacenter-fall-2024/finalproject-final-project-team-117
+git clone https://github.com/snna2069/course-experience-exchange.git
 ```
 
-### Setting Up Database:
-- Create database: 
-    Login to your database user
-    CREATE USER courseexperienceexchange WITH PASSWORD 'password'; 
-    GRANT ALL PRIVILEGES ON DATABASE postgres TO courseexperienceexchange;
-    psql -U courseexperienceexchange -d postgres -f init.sql
-    \q
+### Prerequisites for the canonical path
 
-### Dependencies:
-- Start Kafka:
-    Cd kafka folder that was installed:
-        bin\windows\kafka-server-start.bat config\server.properties
-- Start Zookeeper:
-    Cd kafka folder that was installed:
-        bin\windows\zookeeper-server-start.bat config\zookeeper.properties
+- Node.js
+- MongoDB running locally on the default port (27017)
 
-### Deployment:
-- Terminal 1:
-    cd finalproject-final-project-team-117/backend folder
-    Run the following commands:
-        - npm install
-        - cd kafka
-        - node producer.js
-- Terminal 2:
-    cd finalproject-final-project-team-117/backend folder
-    Run the following commands:
-        - npm install
-        - cd kafka
-        - node consumer.js
-- Terminal 3:
-    cd finalproject-final-project-team-117/backend folder
-    Run the following commands:
-        - npm install
-        - node server.js
-- Terminal 4:
-    cd finalproject-final-project-team-117/frontend folder
-    Run the following commands:
-        - npm install
-        - npm start
-        
-This will bring up the browsers.
-Ensure to check the MongoDB Compass to verify any DB related issues.
+### Backend Setup
+
+```bash
+cd course-experience-exchange/backend
+npm install
+npm start
+```
+
+This runs `server.js`, which connects to MongoDB and starts the Express
+API on `http://localhost:5000`.
+
+### Frontend Setup
+
+```bash
+cd course-experience-exchange/frontend/course-feedback
+npm install
+npm start
+```
+
+This starts the React development server on `http://localhost:3000`.
+
+Note: `frontend/course-feedback` is the only frontend package that runs the
+application. The `frontend/package.json` at the repository root is not a
+runnable application (no source files) and should be ignored until it is
+evaluated for removal.
+
+### Optional / Not Required for the Canonical Path
+
+The following are not required to run the application and are not
+currently wired into the active backend:
+
+- PostgreSQL (`database/init.sql`, `backend/index.js`)
+- Kafka/Zookeeper (`kafka/`, `backend/kafka/`)
+- Firebase Authentication (`backend/firebaseAdmin.js`, `backend/controllers/authController.js`)
+

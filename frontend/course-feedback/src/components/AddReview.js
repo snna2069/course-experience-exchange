@@ -1,3 +1,8 @@
+// LEGACY / INACTIVE: not imported or routed anywhere in App.js, and posts to
+// GET/POST /api/courses/:id/reviews, which does not exist in the active
+// backend. See the note in Review.js for the full explanation. The active
+// feedback feature is the Comment flow in CourseDetails.js.
+
 import React, { useState } from "react";
 import axios from "axios";
 
