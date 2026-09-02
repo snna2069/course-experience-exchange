@@ -1,118 +1,122 @@
-# COURSE EXPERIENCE EXCHANGE
+<p align="center">
+  <img src="./docs/project-title.svg" alt="Course Experience Exchange animated barcode title" />
+</p>
 
-## Project Description
+<p align="center">
+  <strong>A polished, student-led course discovery experience.</strong><br />
+  Search classes, compare what matters, and learn from the people who took them.
+</p>
 
-The "Course Experience Exchange" is a comprehensive, web-based platform aimed at helping students make well-informed decisions regarding their academic courses. By enabling the sharing of detailed reviews, rating and feedback, the platform seeks to improve the educational experience for students and foster a culture of continuous improvement in academia.
+<p align="center">
+  <a href="https://github.com/snna2069/course-experience-exchange">Repository</a> ·
+  <a href="https://snehaa.me/">Portfolio</a> ·
+  <a href="https://www.linkedin.com/in/snehan-raju/">LinkedIn</a>
+</p>
 
-------------------------------------------------------------------------------------------------------------------
+## The idea
+
+Choosing a course should feel less like decoding a catalog and more like getting advice from a thoughtful classmate. **Course Experience Exchange (CEE)** turns student feedback into a friendly, searchable visual catalog.
+
+The current showcase runs on curated local sample data, so the complete experience is available without MongoDB or a backend running.
+
+## Showcase
+
+| Discover the catalog | Read the details |
+| --- | --- |
+| ![CEE home page](./docs/screenshots/home.png) | ![CEE course detail page](./docs/screenshots/course-detail.png) |
+
+| Personal profile |
+| --- |
+| ![CEE profile page](./docs/screenshots/profile.png) |
 
 ## Features
 
-- **User Authentication**: Secure login and user session management.  
-- **Course Feedbacks**: Choose the courses and find reviews on them.  
-- **Filter Events**: Filter the courses based on department and grad levels.  
-- **Rate the couses**: Rate the courses by liking or disliking it
+- **Browse and search** courses by name, code, professor, department, or level.
+- **Course cards** with ratings, review counts, format, and visual category treatments.
+- **Course details** with instructor information, highlights, ratings, and student notes.
+- **Interactive recommendations** with local yes / not-sure voting.
+- **Showcase comments** that update instantly in the browser.
+- **Responsive experience** designed for desktop, tablet, and mobile.
+- **Profile and auth screens** that demonstrate the complete navigation flow.
+- **Accessible UI details** including labels, focus states, landmarks, external-link safety, and rating announcements.
 
-------------------------------------------------------------------------------------------------------------------
+## Tech stack
 
-## Tech Stack
+### Active showcase
 
-  
-- **Frontend**: React.js; HTML, CSS, JavaScript
-- **Backend**: Node.js with Express.js
-- **Database**: Cloud SQL (PostgreSQL)
-- **Database Management**: MongoDB
-- **Message Queue**: Apache Kafka
-- **Authentication**: Firebase Authentication
-- **Version Control**: Git and GitHub
+- React 19
+- React Router
+- Create React App / `react-scripts`
+- CSS with responsive media queries
+- Font Awesome icons
+- Centralized local data in `frontend/course-feedback/src/data/courses.js`
 
-------------------------------------------------------------------------------------------------------------------
+### Preserved application path
 
-## Prerequisites
+The repository also retains the previously stabilized API path for future integration:
 
-1. **Have the following pre-installed**: Add all of them to environment variables.
-   - React
-   - node.js
-   - PostgreSQL
-   - MongoDB/Mongosh
-   - MongoDB Compass
-   - Apache Kafka
-   - gradle
-
-3. **Git** for version control.  
-
-------------------------------------------------------------------------------------------------------------------
-
-## Current Canonical Architecture (Phase 2)
-
-The active, working application path is:
-
-```
-React frontend (frontend/course-feedback)
-        |
-        | REST API (http://localhost:5000)
-        v
-Express backend (backend/server.js -> backend/app.js)
-        |
-        v
-MongoDB (mongodb://localhost:27017/courseexperienceexchange)
+```text
+React frontend → Express REST API → MongoDB
 ```
 
-PostgreSQL and Kafka code also exist in this repository but are **not** part
-of the active path. They are preserved for future evaluation and are marked
-as legacy/inactive in the source files (`backend/index.js`, `backend/kafka/`,
-`kafka/`, `database/init.sql`). Do not start them as part of normal setup.
+PostgreSQL, Kafka, and earlier infrastructure are preserved as inactive/legacy code and are not required for the showcase.
 
-------------------------------------------------------------------------------------------------------------------
+## Run locally
 
-## Installation and Deployment Instructions
+### Requirements
 
-### Clone the Repository
+- Node.js 18+
+- npm
+
+### Start the showcase
 
 ```bash
 git clone https://github.com/snna2069/course-experience-exchange.git
-```
-
-### Prerequisites for the canonical path
-
-- Node.js
-- MongoDB running locally on the default port (27017)
-
-### Backend Setup
-
-```bash
-cd course-experience-exchange/backend
-npm install
-npm start
-```
-
-This runs `server.js`, which connects to MongoDB and starts the Express
-API on `http://localhost:5000`.
-
-### Frontend Setup
-
-```bash
 cd course-experience-exchange/frontend/course-feedback
 npm install
 npm start
 ```
 
-This starts the React development server on `http://localhost:3000`.
+Open [http://localhost:3000](http://localhost:3000).
 
-Note: `frontend/course-feedback` is the only frontend package in this
-repository; the orphaned root-level `frontend/package.json` (no source
-files, superseded by this package) was removed in Phase 5.
+### Create a production build
 
-### Optional / Not Required for the Canonical Path
+```bash
+cd frontend/course-feedback
+npm run build
+```
 
-The following are not required to run the application and are not
-currently wired into the active backend:
+The backend requires a running MongoDB instance:
 
-- PostgreSQL (`database/init.sql`, `backend/index.js`)
-- Kafka/Zookeeper (`kafka/`, `backend/kafka/`)
+```bash
+cd backend
+npm install
+# Copy .env.example to .env and configure MONGODB_URI and JWT_SECRET
+npm start
+```
 
-Firebase Authentication support (`firebase-admin`/`firebase` packages) was
-part of the original tech stack but has no working, reachable code path in
-this repository; the unreachable Firebase-based auth controller was removed
-in Phase 5.
+The API starts at [http://localhost:5000](http://localhost:5000).
 
+## Project map
+
+```text
+frontend/course-feedback/
+├── src/
+│   ├── components/       Shared header, footer, auth, profile, and detail views
+│   ├── data/courses.js   Central showcase content
+│   ├── App.js            Routes, catalog search, and filters
+│   └── global.css        Design tokens, typography, and accessibility
+└── package.json
+```
+
+## Design direction
+
+CEE uses an editorial visual language: warm paper tones, expressive serif headlines, mono metadata, soft color blocks, and restrained motion. The goal is to make academic discovery feel personal, calm, and memorable.
+
+## Built by
+
+**Sneha Nagaraju**
+
+- [LinkedIn](https://www.linkedin.com/in/snehan-raju/)
+- [GitHub](https://github.com/snna2069)
+- [Portfolio](https://snehaa.me/)

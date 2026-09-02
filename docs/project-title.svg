@@ -1,0 +1,13 @@
+<svg width="1200" height="250" viewBox="0 0 1200 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Course Experience Exchange</title>
+  <desc id="desc">Animated barcode inspired title card for the Course Experience Exchange project.</desc>
+  <rect width="1200" height="250" rx="18" fill="#c7b9f4"/>
+  <g fill="#20201e" opacity=".86">
+    <path d="M54 34h5v92h-5zM66 34h12v92H66zM86 34h4v92h-4zM98 34h8v92h-8zM115 34h3v92h-3zM128 34h15v92h-15zM151 34h5v92h-5zM166 34h9v92h-9zM185 34h3v92h-3zM197 34h12v92h-12zM220 34h5v92h-5zM234 34h16v92h-16zM260 34h4v92h-4zM274 34h9v92h-9zM294 34h5v92h-5zM309 34h13v92h-13zM332 34h4v92h-4zM345 34h8v92h-8zM365 34h15v92h-15zM392 34h4v92h-4zM406 34h10v92h-10zM427 34h5v92h-5zM441 34h13v92h-13zM466 34h4v92h-4zM478 34h8v92h-8zM496 34h15v92h-15zM523 34h5v92h-5zM537 34h4v92h-4zM550 34h12v92h-12zM574 34h5v92h-5zM589 34h9v92h-9zM610 34h4v92h-4zM623 34h15v92h-15zM650 34h5v92h-5zM664 34h9v92h-9zM684 34h3v92h-3zM696 34h13v92h-13zM721 34h5v92h-5zM735 34h16v92h-16zM762 34h4v92h-4zM775 34h8v92h-8zM794 34h5v92h-5zM808 34h13v92h-13zM833 34h4v92h-4zM846 34h10v92h-10zM866 34h5v92h-5zM881 34h15v92h-15zM908 34h4v92h-4zM921 34h8v92h-8zM941 34h5v92h-5zM955 34h13v92h-13zM980 34h4v92h-4zM993 34h9v92h-9zM1013 34h15v92h-15zM1040 34h4v92h-4zM1053 34h10v92h-10zM1073 34h5v92h-5zM1087 34h14v92h-14z"/>
+  </g>
+  <rect x="-260" y="25" width="170" height="110" fill="#fff" opacity=".32" transform="skewX(-18)">
+    <animate attributeName="x" from="-260" to="1260" dur="3.8s" repeatCount="indefinite"/>
+  </rect>
+  <text x="54" y="184" fill="#20201e" font-family="Georgia, serif" font-size="42" font-weight="bold">COURSE EXPERIENCE EXCHANGE</text>
+  <text x="57" y="215" fill="#6c48d7" font-family="monospace" font-size="12" letter-spacing="3">A STUDENT-LED CATALOG · DISCOVER SOMETHING WORTH TALKING ABOUT</text>
+</svg>
