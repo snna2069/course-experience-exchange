@@ -49,8 +49,9 @@ function Home() {
           <span className="course-count">{filteredCourses.length} of {courses.length} courses</span>
         </div>
         <div className="search-bar">
-          <span className="search-icon">⌕</span>
-          <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search courses, professors, or codes..." />
+          <span className="search-icon" aria-hidden="true">⌕</span>
+          <label className="sr-only" htmlFor="course-search">Search courses</label>
+          <input id="course-search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search courses, professors, or codes..." />
           <select value={department} onChange={(event) => setDepartment(event.target.value)} aria-label="Filter by department">
             <option value="">All departments</option>
             {departments.map((item) => <option key={item} value={item}>{item}</option>)}

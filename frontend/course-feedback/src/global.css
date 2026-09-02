@@ -13,3 +13,6 @@ button, select { cursor: pointer; }
 .stars { white-space: nowrap; }
 .star { color: #d8d4cb; }
 .star.filled { color: #ec9d39; }
+.sr-only { clip: rect(0, 0, 0, 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px; }
+:focus-visible { outline: 3px solid rgba(108, 72, 215, .45); outline-offset: 3px; }
+button:disabled, input:disabled { cursor: not-allowed; }
