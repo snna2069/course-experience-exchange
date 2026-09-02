@@ -1,12 +1,15 @@
-import React, { useMemo, useState } from 'react';
-import { Link, Route, Routes } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Link, Route, Routes, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Profile from './components/Profile';
 import CourseDetails from './components/CourseDetails';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import Footer from './components/Footer';
-import { courses, departments } from './data/courses';
+import AddCourse from './components/AddCourse';
+import { useAuth } from './context/AuthContext';
+import { useCourses } from './context/CourseContext';
+import { departments } from './data/courses';
 import './App.css';
 
 const Stars = ({ rating }) => (
@@ -16,15 +19,27 @@ const Stars = ({ rating }) => (
 );
 
 function Home() {
+  const { user } = useAuth();
+  const { courses, previewCourses } = useCourses();
+  const location = useLocation();
   const [search, setSearch] = useState('');
   const [department, setDepartment] = useState('');
   const [level, setLevel] = useState('');
-  const filteredCourses = useMemo(() => courses.filter((course) => {
+
+  // Signed-out visitors see a curated preview; the full catalog unlocks on sign in.
+  const visibleCourses = user ? courses : previewCourses;
+  const lockedCount = courses.length - visibleCourses.length;
+
+  const filteredCourses = useMemo(() => visibleCourses.filter((course) => {
     const query = search.toLowerCase();
     return (!query || `${course.name} ${course.code} ${course.professor}`.toLowerCase().includes(query))
       && (!department || course.department === department)
       && (!level || course.gradLevel === level);
-  }), [search, department, level]);
+  }), [visibleCourses, search, department, level]);
+
+  useEffect(() => {
+    if (location.hash === '#catalog') document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' });
+  }, [location.hash]);
 
   return (
     <main>
@@ -46,7 +61,10 @@ function Home() {
       <section className="catalog-section" id="catalog">
         <div className="section-heading">
           <div><span className="eyebrow">BROWSE THE CATALOG</span><h2>Courses worth talking about.</h2></div>
-          <span className="course-count">{filteredCourses.length} of {courses.length} courses</span>
+          <div className="section-actions">
+            <span className="course-count">{filteredCourses.length} of {visibleCourses.length} courses</span>
+            <Link className="button button-outline" to="/courses/new">+ Add a course</Link>
+          </div>
         </div>
         <div className="search-bar">
           <span className="search-icon" aria-hidden="true">⌕</span>
@@ -65,9 +83,22 @@ function Home() {
             {filteredCourses.map((course) => (
               <Link className="course-card" to={`/courses/${course.id}`} key={course.id}>
                 <div className={`card-art ${course.accent}`}><span>{course.code}</span><strong>{course.name.split(' ').map((word) => word[0]).join('')}</strong></div>
-                <div className="card-body"><div className="card-meta"><span>{course.department}</span><span>{course.gradLevel}</span></div><h3>{course.name}</h3><p>{course.description}</p><div className="card-footer"><Stars rating={course.rating} /><strong>{course.rating}</strong><span>{course.reviews} reviews</span><span className="arrow">↗</span></div></div>
+                <div className="card-body"><div className="card-meta"><span>{course.department}</span><span>{course.gradLevel}</span></div><h3>{course.name}</h3><p>{course.description}</p><div className="card-footer"><Stars rating={course.rating} /><strong>{course.rating.toFixed(1)}</strong><span>{course.reviews === 1 ? '1 review' : `${course.reviews} reviews`}</span><span className="arrow">↗</span></div></div>
               </Link>
             ))}
+          </div>
+        )}
+        {lockedCount > 0 && (
+          <div className="unlock-banner">
+            <span className="unlock-mark" aria-hidden="true">✳</span>
+            <div>
+              <h3>{lockedCount} more courses in the full catalog</h3>
+              <p>Sign in to browse every department, read student notes, and share your own.</p>
+            </div>
+            <div className="unlock-actions">
+              <Link className="button" to="/login">Sign in ↗</Link>
+              <Link className="text-link" to="/signup">Create an account</Link>
+            </div>
           </div>
         )}
       </section>
@@ -76,7 +107,7 @@ function Home() {
 }
 
 function App() {
-  return <><Header /><Routes><Route path="/" element={<Home />} /><Route path="/login" element={<Login />} /><Route path="/signup" element={<Signup />} /><Route path="/profile" element={<Profile />} /><Route path="/courses/:id" element={<CourseDetails />} /><Route path="*" element={<Home />} /></Routes><Footer /></>;
+  return <><Header /><Routes><Route path="/" element={<Home />} /><Route path="/login" element={<Login />} /><Route path="/signup" element={<Signup />} /><Route path="/profile" element={<Profile />} /><Route path="/courses/new" element={<AddCourse />} /><Route path="/courses/:id" element={<CourseDetails />} /><Route path="*" element={<Home />} /></Routes><Footer /></>;
 }
 
 export default App;

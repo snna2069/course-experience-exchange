@@ -30,7 +30,13 @@ The current showcase runs on curated local sample data, so the complete experien
 <p align="center">
   <img src="./docs/screenshots/course-detail.png" alt="CEE course detail page" width="720" style="border: 1px solid #d8d3ca; border-radius: 10px;" />
   <br />
-  <sub>Read the details</sub>
+  <sub>Course details &mdash; stats, highlights, student notes, and a recommendation panel</sub>
+</p>
+
+<p align="center">
+  <img src="./docs/screenshots/add-course.png" alt="CEE add course form" width="720" style="border: 1px solid #d8d3ca; border-radius: 10px;" />
+  <br />
+  <sub>Add a missing course, then be the first to review it</sub>
 </p>
 
 <p align="center">
@@ -44,8 +50,9 @@ The current showcase runs on curated local sample data, so the complete experien
 - **Browse and search** courses by name, code, professor, department, or level.
 - **Course cards** with ratings, review counts, format, and visual category treatments.
 - **Course details** with instructor information, highlights, ratings, and student notes.
+- **Add a course** that is missing from the catalog, then post the first review for it.
 - **Interactive recommendations** with local yes / not-sure voting.
-- **Showcase comments** that update instantly in the browser.
+- **Star-rated reviews** where every rating and review count is derived from the notes themselves.
 - **Responsive experience** designed for desktop, tablet, and mobile.
 - **Profile and auth screens** that demonstrate the complete navigation flow.
 - **Accessible UI details** including labels, focus states, landmarks, external-link safety, and rating announcements.

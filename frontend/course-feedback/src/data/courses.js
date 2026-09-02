@@ -1,6 +1,9 @@
 export const departments = ['Computer Science', 'Design', 'Business', 'Data Science'];
 
-export const courses = [
+// Courses shown to signed-out visitors. The rest of the catalog unlocks on sign in.
+export const PREVIEW_IDS = ['cs-401', 'bus-118', 'cs-473', 'ds-410'];
+
+const catalog = [
   {
     id: 'cs-401',
     name: 'Human-Centered AI',
@@ -10,14 +13,14 @@ export const courses = [
     professor: 'Dr. Maya Chen',
     format: 'Hybrid',
     duration: '12 weeks',
-    rating: 4.9,
-    reviews: 128,
     accent: 'violet',
     description: 'Explore how thoughtful design, responsible machine learning, and real-world research combine to build AI people can trust.',
     highlights: ['Ethical AI foundations', 'Hands-on model critique', 'Capstone research studio'],
     comments: [
       { id: 1, author: 'Jordan Lee', role: 'Computer Science · 2025', text: 'The capstone made complex ideas feel practical. Every seminar had a clear takeaway.', date: '2 weeks ago', rating: 5 },
       { id: 2, author: 'Amara Williams', role: 'Computer Science · 2024', text: 'A demanding course, but the feedback and studio format were excellent.', date: '1 month ago', rating: 5 },
+      { id: 17, author: 'Theo Lindqvist', role: 'Computer Science · 2025', text: 'The ethics readings are not filler — they genuinely changed how I scope projects.', date: '3 weeks ago', rating: 5 },
+      { id: 18, author: 'Rina Shah', role: 'Design · 2024', text: 'Came in from a design background and never felt lost. Great cross-disciplinary setup.', date: '2 months ago', rating: 4 },
     ],
   },
   {
@@ -29,13 +32,12 @@ export const courses = [
     professor: 'Prof. Elena Rossi',
     format: 'In person',
     duration: '10 weeks',
-    rating: 4.8,
-    reviews: 94,
     accent: 'coral',
     description: 'Turn messy datasets into clear, compelling narratives with visual reasoning, editorial judgment, and beautiful charts.',
     highlights: ['Visual analytics', 'Narrative workshops', 'Portfolio-ready projects'],
     comments: [
       { id: 3, author: 'Nia Patel', role: 'Data Science · 2025', text: 'I use the storytelling framework in every presentation now. Surprisingly fun and very useful.', date: '3 days ago', rating: 5 },
+      { id: 25, author: 'Adam Reyes', role: 'Business · 2024', text: 'Prof. Rossi is relentless about editorial clarity. My charts are unrecognisably better.', date: '1 month ago', rating: 5 },
     ],
   },
   {
@@ -47,13 +49,12 @@ export const courses = [
     professor: 'Samira Okafor',
     format: 'Studio',
     duration: '8 weeks',
-    rating: 4.7,
-    reviews: 76,
     accent: 'teal',
     description: 'A studio course about inclusive systems, participatory research, and designing experiences where everyone can contribute.',
     highlights: ['Participatory research', 'Inclusive critique', 'Community brief'],
     comments: [
       { id: 4, author: 'Chris Morgan', role: 'Design · 2024', text: 'The community brief was the most rewarding project I did last year.', date: '2 months ago', rating: 5 },
+      { id: 26, author: 'Zoe Aldridge', role: 'Design · 2025', text: 'Participatory research is hard to teach well and this studio does it properly.', date: '3 weeks ago', rating: 4 },
     ],
   },
   {
@@ -65,13 +66,166 @@ export const courses = [
     professor: 'Marcus Bell',
     format: 'Online',
     duration: '6 weeks',
-    rating: 4.6,
-    reviews: 61,
     accent: 'gold',
     description: 'Build the habits, positioning, and practical confidence to turn a creative idea into a sustainable venture.',
     highlights: ['Idea validation', 'Founder storytelling', 'Launch playbook'],
-    comments: [],
+    comments: [
+      { id: 19, author: 'Hannah Wu', role: 'Business · 2025', text: 'Short, practical, and I finished it with an actual validated idea rather than a slide deck.', date: '1 week ago', rating: 5 },
+      { id: 20, author: 'Owen Blackwell', role: 'Business · 2024', text: 'The founder storytelling unit alone was worth the six weeks. Marcus gives real feedback.', date: '1 month ago', rating: 4 },
+    ],
+  },
+  {
+    id: 'cs-311',
+    name: 'Design and Analysis of Algorithms',
+    code: 'CS 311',
+    department: 'Computer Science',
+    gradLevel: 'Undergraduate',
+    professor: 'Dr. Alan Whitfield',
+    format: 'In person',
+    duration: '15 weeks',
+    accent: 'sky',
+    description: 'Master the core toolkit of algorithm design — greedy methods, divide and conquer, dynamic programming — and learn to prove why they work.',
+    highlights: ['Complexity analysis', 'Dynamic programming', 'Proof techniques'],
+    comments: [
+      { id: 5, author: 'Priya Raman', role: 'Computer Science · 2025', text: 'Tough but fair. The weekly problem sets are where the real learning happens.', date: '1 week ago', rating: 5 },
+      { id: 6, author: 'Diego Alvarez', role: 'Computer Science · 2024', text: 'Completely changed how I approach interview questions and my own code.', date: '3 months ago', rating: 4 },
+    ],
+  },
+  {
+    id: 'cs-427',
+    name: 'Computer Graphics',
+    code: 'CS 427',
+    department: 'Computer Science',
+    gradLevel: 'Undergraduate',
+    professor: 'Prof. Hana Kimura',
+    format: 'Studio',
+    duration: '12 weeks',
+    accent: 'blush',
+    description: 'Build renderers from the ground up. Rasterization, ray tracing, shading models, and the math that makes pixels feel alive.',
+    highlights: ['Ray tracer from scratch', 'Shader programming', 'Real-time rendering'],
+    comments: [
+      { id: 7, author: 'Sam Okada', role: 'Computer Science · 2025', text: 'Writing my own ray tracer was the most satisfying project of my degree.', date: '5 days ago', rating: 5 },
+      { id: 27, author: 'Lucia Ferrante', role: 'Design · 2024', text: 'The math ramps up fast, but Prof. Kimura holds excellent office hours.', date: '1 month ago', rating: 4 },
+    ],
+  },
+  {
+    id: 'cs-455',
+    name: 'Cybersecurity',
+    code: 'CS 455',
+    department: 'Computer Science',
+    gradLevel: 'Undergraduate',
+    professor: 'Dr. Ruth Danvers',
+    format: 'Hybrid',
+    duration: '14 weeks',
+    accent: 'sand',
+    description: 'Think like an attacker to build like a defender. Cryptography, network security, threat modeling, and hands-on capture-the-flag labs.',
+    highlights: ['Capture-the-flag labs', 'Applied cryptography', 'Threat modeling'],
+    comments: [
+      { id: 8, author: 'Tomas Beck', role: 'Computer Science · 2024', text: 'The CTF labs are addictive. I stayed up way too late on more than one of them.', date: '2 weeks ago', rating: 5 },
+      { id: 9, author: 'Leila Haddad', role: 'Computer Science · 2025', text: 'Great breadth. I wish we had gone deeper on cloud security, but a solid foundation.', date: '1 month ago', rating: 4 },
+    ],
+  },
+  {
+    id: 'cs-473',
+    name: 'Computer Vision',
+    code: 'CS 473',
+    department: 'Computer Science',
+    gradLevel: 'Graduate',
+    professor: 'Dr. Ivan Petrov',
+    format: 'In person',
+    duration: '12 weeks',
+    accent: 'lime',
+    description: 'From classical feature detection to modern deep architectures — teach machines to see, segment, and reason about images.',
+    highlights: ['Convolutional architectures', 'Image segmentation', 'Vision research paper'],
+    comments: [
+      { id: 10, author: 'Grace Nomura', role: 'Computer Science · 2025', text: 'Excellent pacing from classical methods into deep learning. The paper review sessions were a highlight.', date: '4 days ago', rating: 5 },
+      { id: 21, author: 'Elias Farrow', role: 'Computer Science · 2024', text: 'The segmentation project was heavy, but I have it in my portfolio and it gets asked about in every interview.', date: '3 weeks ago', rating: 5 },
+      { id: 22, author: 'Mira Kaplan', role: 'Data Science · 2025', text: 'Bring a solid linear algebra refresher. Once you have it, the course is genuinely great.', date: '2 months ago', rating: 4 },
+    ],
+  },
+  {
+    id: 'cs-491',
+    name: 'Datacenter Scale Computing',
+    code: 'CS 491',
+    department: 'Computer Science',
+    gradLevel: 'Graduate',
+    professor: 'Dr. Priya Venkatesan',
+    format: 'Hybrid',
+    duration: '10 weeks',
+    accent: 'violet',
+    description: 'Design systems that span thousands of machines. Distributed storage, scheduling, fault tolerance, and the economics of scale.',
+    highlights: ['Distributed systems design', 'Fault tolerance patterns', 'Cluster scheduling lab'],
+    comments: [
+      { id: 11, author: 'Kwame Boateng', role: 'Computer Science · 2024', text: 'Finally understood why distributed systems fail in the ways they do. Great real-world case studies.', date: '3 weeks ago', rating: 5 },
+      { id: 28, author: 'Sofia Bergman', role: 'Computer Science · 2025', text: 'The cluster scheduling lab is the closest thing to real infrastructure work I did at school.', date: '2 months ago', rating: 4 },
+    ],
+  },
+  {
+    id: 'ds-410',
+    name: 'Machine Learning',
+    code: 'DS 410',
+    department: 'Data Science',
+    gradLevel: 'Undergraduate',
+    professor: 'Dr. Nora Ellison',
+    format: 'Hybrid',
+    duration: '15 weeks',
+    accent: 'coral',
+    description: 'The foundations that everything else builds on — regression, trees, ensembles, and neural networks, with an emphasis on evaluating honestly.',
+    highlights: ['Model evaluation', 'Feature engineering', 'End-to-end ML project'],
+    comments: [
+      { id: 12, author: 'Ana Duarte', role: 'Data Science · 2025', text: 'The emphasis on honest evaluation and avoiding leakage was the most valuable part.', date: '6 days ago', rating: 5 },
+      { id: 13, author: 'Ben Sorensen', role: 'Data Science · 2024', text: 'Heavy workload but you come out genuinely able to build things.', date: '2 months ago', rating: 5 },
+      { id: 23, author: 'Clara Mendes', role: 'Data Science · 2025', text: 'Dr. Ellison is a fantastic lecturer. The ensembles unit finally made trees click for me.', date: '2 weeks ago', rating: 5 },
+      { id: 24, author: 'Ravi Nandakumar', role: 'Computer Science · 2025', text: 'Fifteen weeks is a real commitment, but the end-to-end project is the best thing on my resume.', date: '1 month ago', rating: 5 },
+    ],
+  },
+  {
+    id: 'ds-432',
+    name: 'Data Mining',
+    code: 'DS 432',
+    department: 'Data Science',
+    gradLevel: 'Graduate',
+    professor: 'Prof. Idris Kalu',
+    format: 'In person',
+    duration: '12 weeks',
+    accent: 'teal',
+    description: 'Find the signal in enormous datasets. Clustering, association rules, anomaly detection, and scalable pattern discovery.',
+    highlights: ['Clustering at scale', 'Anomaly detection', 'Pattern mining project'],
+    comments: [
+      { id: 14, author: 'Yuki Tanaka', role: 'Data Science · 2025', text: 'Very hands-on. The anomaly detection unit applied directly to my internship work.', date: '2 weeks ago', rating: 4 },
+      { id: 29, author: 'Peter Oyelaran', role: 'Data Science · 2024', text: 'Good coverage of classical techniques that get skipped in the deep learning rush.', date: '1 month ago', rating: 5 },
+    ],
+  },
+  {
+    id: 'ds-465',
+    name: 'Natural Language Processing',
+    code: 'DS 465',
+    department: 'Data Science',
+    gradLevel: 'Graduate',
+    professor: 'Dr. Sofia Marchetti',
+    format: 'Hybrid',
+    duration: '12 weeks',
+    accent: 'gold',
+    description: 'How machines read, translate, and generate language — from tokenization and embeddings through transformers and modern LLMs.',
+    highlights: ['Transformer architectures', 'Embeddings and tokenization', 'Fine-tuning workshop'],
+    comments: [
+      { id: 15, author: 'Marcus Reid', role: 'Data Science · 2025', text: 'Timely and rigorous. Building a transformer from scratch made everything click.', date: '1 week ago', rating: 5 },
+      { id: 16, author: 'Fatima Zahra', role: 'Data Science · 2024', text: 'Loved the fine-tuning workshop. Would take again.', date: '1 month ago', rating: 5 },
+    ],
   },
 ];
 
-export const getCourseById = (id) => courses.find((course) => course.id === id);
+// Rating and review count are derived from the notes themselves so the numbers
+// on a card always match what a visitor sees on the course page.
+const withDerivedStats = (course) => {
+  const total = course.comments.reduce((sum, note) => sum + note.rating, 0);
+  return {
+    ...course,
+    reviews: course.comments.length,
+    rating: course.comments.length ? Math.round((total / course.comments.length) * 10) / 10 : 0,
+  };
+};
+
+export const courses = catalog.map(withDerivedStats);
+
+export const isPreviewCourse = (course) => PREVIEW_IDS.includes(course.id);
