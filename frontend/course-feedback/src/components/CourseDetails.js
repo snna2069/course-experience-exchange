@@ -1,143 +1,39 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import api from '../api/api';
+import React, { useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { getCourseById } from '../data/courses';
 import { useAuth } from '../context/AuthContext';
 import './CourseDetails.css';
 
 const CourseDetails = () => {
   const { id } = useParams();
-  const [course, setCourse] = useState(null);
-  const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [userRating, setUserRating] = useState(null); // to track user rating
+  const course = getCourseById(id);
   const { user } = useAuth();
+  const [comments, setComments] = useState(course?.comments || []);
+  const [comment, setComment] = useState('');
+  const [vote, setVote] = useState(null);
+  if (!course) return <main className="not-found"><h1>Course not found</h1><Link to="/">Back to catalog</Link></main>;
 
-  useEffect(() => {
-    if (!id) {
-      setError('Invalid course ID');
-      setLoading(false);
-      return;
-    }
-
-    api
-      .get(`/courses/${id}`)
-      .then((response) => {
-        setCourse(response.data);
-        setComments(response.data.comments || []);
-        setUserRating(response.data.userRating || null); // set user's rating if available
-        setLoading(false);
-      })
-      .catch((error) => {
-        setError('Failed to load course details.');
-        setLoading(false);
-      });
-  }, [id]);
-
-  const handleCommentSubmit = () => {
-    if (newComment) {
-      api
-        .post(`/courses/${id}/comments`, {
-          text: newComment,
-        })
-        .then((response) => {
-          setComments((prevComments) => [...prevComments, response.data]);
-          setNewComment('');
-        })
-        .catch(() => {
-          setError('Error adding comment.');
-        });
-    }
+  const submitComment = (event) => {
+    event.preventDefault();
+    if (!comment.trim()) return;
+    setComments([...comments, { id: Date.now(), author: user?.name || 'You', role: 'Student', text: comment.trim(), date: 'just now', rating: 5 }]);
+    setComment('');
   };
 
-  const handleRating = (rating) => {
-    // Update user rating when they click like or dislike
-    setUserRating(rating);
-
-    api
-      .post(`/courses/${id}/rate`, { rating })
-      .then((response) => {
-        setCourse(response.data.course); // Update the course details after rating
-        setUserRating(response.data.userRating);
-      })
-      .catch(() => {
-        setError('Error submitting rating.');
-      });
-  };
-
-  if (loading) return <p>Loading course details...</p>;
-  if (error) return <p>{error}</p>;
-  if (!course) return <p>Course not found or data unavailable.</p>;
-
-  return (
-    <div className="course-details">
-      <h2>{course.name}</h2>
-      <p>{course.description}</p>
-      <div className="course-meta">
-        <p>
-          <strong>Department:</strong> {course.department}
-        </p>
-        <p>
-          <strong>Graduation Level:</strong> {course.gradLevel}
-        </p>
-        <div className="rating">
-          <strong>Rating:</strong>{' '}
-          <span className="stars">
-            {course.rating && Number.isFinite(course.rating)
-              ? Array(Math.round(course.rating))
-                  .fill('⭐')
-                  .join('')
-              : 'No rating available'}
-          </span>
-          {course.rating && Number.isFinite(course.rating) && ` (${course.rating.toFixed(1)})`}
+  return <main className="details-page">
+    <Link className="back-link" to="/">← Back to catalog</Link>
+    <section className={`details-hero ${course.accent}`}><div><span className="eyebrow">{course.code} · {course.department}</span><h1>{course.name}</h1><p>{course.description}</p></div><div className="details-initials">{course.name.split(' ').map((word) => word[0]).join('')}</div></section>
+    <div className="details-layout">
+      <article>
+        <div className="detail-stats"><div><span>Rating</span><strong>{course.rating} <small>★</small></strong><em>{course.reviews} student reviews</em></div><div><span>Format</span><strong>{course.format}</strong><em>{course.duration}</em></div><div><span>Instructor</span><strong>{course.professor}</strong><em>Course lead</em></div></div>
+        <div className="detail-section"><span className="eyebrow">WHAT YOU'LL EXPLORE</span><h2>A course with room to grow.</h2><ul className="highlights">{course.highlights.map((item) => <li key={item}>✦ {item}</li>)}</ul></div>
+        <div className="detail-section feedback"><div className="feedback-heading"><div><span className="eyebrow">FROM THE COMMUNITY</span><h2>Student notes.</h2></div><span>{comments.length} reviews</span></div>
+          {comments.map((item) => <div className="comment-card" key={item.id}><div className="avatar">{item.author.split(' ').map((word) => word[0]).join('')}</div><div><div className="comment-top"><strong>{item.author}</strong><span>{item.date}</span></div><small>{item.role}</small><div className="comment-stars"><span>★★★★★</span> {item.rating}.0</div><p>{item.text}</p></div></div>)}
+          <form className="comment-form" onSubmit={submitComment}><input value={comment} onChange={(event) => setComment(event.target.value)} placeholder={user ? 'Share your experience...' : 'Log in to share your experience'} disabled={!user} /><button type="submit" disabled={!user}>Post note ↗</button></form>
         </div>
-        <div className="like-buttons">
-          <button
-            disabled={!user}
-            className={userRating === 1 ? 'liked' : ''}
-            onClick={() => handleRating(1)}
-            title="Like"
-          >
-            👍
-          </button>
-          <button
-            disabled={!user}
-            className={userRating === -1 ? 'disliked' : ''}
-            onClick={() => handleRating(-1)}
-            title="Dislike"
-          >
-            👎
-          </button>
-        </div>
-      </div>
-
-      <div className="comments-section">
-        <h3>Comments</h3>
-        {comments.length === 0 ? (
-          <p>No comments yet. Be the first to comment!</p>
-        ) : (
-          <ul className="comments-list">
-            {comments.map((comment) => (
-              <li key={comment._id} className="comment">
-                <strong>{comment.user?.name || 'User'}</strong>: {comment.text}
-              </li>
-            ))}
-          </ul>
-        )}
-        <div className="comment-input">
-          <input
-            type="text"
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            placeholder="Write a comment..."
-          />
-          <button onClick={handleCommentSubmit} disabled={!user}>Submit</button>
-          {!user && <p>Log in to comment or rate a course.</p>}
-        </div>
-      </div>
+      </article>
+      <aside className="vote-panel"><span className="eyebrow">WORTH YOUR TIME?</span><h3>Would you recommend this course?</h3><p>Your anonymous vote helps other students find a better fit.</p><div className="vote-buttons"><button className={vote === 1 ? 'selected yes' : ''} onClick={() => setVote(vote === 1 ? null : 1)}>↑ <span>Yes</span></button><button className={vote === -1 ? 'selected no' : ''} onClick={() => setVote(vote === -1 ? null : -1)}>↓ <span>Not sure</span></button></div><div className="vote-total"><strong>92%</strong><span>of students would recommend it</span></div></aside>
     </div>
-  );
+  </main>;
 };
-
 export default CourseDetails;

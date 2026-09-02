@@ -1,35 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
-import { useAuth } from '../context/AuthContext'; 
+import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import './Header.css';
 
 const Header = () => {
   const { user, logout } = useAuth();
-
+  const location = useLocation();
   return (
-    <header className="header">
-      <div className="logo">
-        <Link to="/">
-          <img src="/assets/profile-icon.png" alt="Logo" className="logo-icon" />
-        </Link>
-        <span className="website-name">Course Experience Exchange</span>
-      </div>
-      <nav className="nav">
-        <div>
-          <Link to="/profile" className="nav-link">
-            <FontAwesomeIcon icon={faUserCircle} /> {user ? 'Profile' : 'Login'}
-          </Link>
-        </div>
-        {user && (
-          <button onClick={logout} className="logout-btn">
-            Logout
-          </button>
-        )}
-      </nav>
+    <header className="site-header">
+      <Link to="/" className="brand"><span className="brand-mark">✳</span><span>course<br /><b>exchange</b></span></Link>
+      <nav><Link className={location.pathname === '/' ? 'active' : ''} to="/">Discover</Link><a href="/#catalog">Catalog</a><Link className={location.pathname === '/profile' ? 'active' : ''} to="/profile">{user ? 'My profile' : 'Sign in'}</Link>{user && <button onClick={logout}>Log out</button>}</nav>
     </header>
   );
 };
-
 export default Header;

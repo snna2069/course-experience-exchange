@@ -1,106 +1,82 @@
-import React, { useState, useEffect } from 'react';
-import { Route, Routes } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import React, { useMemo, useState } from 'react';
+import { Link, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import Profile from './components/Profile';
-import Welcome from './components/Welcome';
 import CourseDetails from './components/CourseDetails';
-import { useAuth } from './context/AuthContext';
 import Login from './components/Login';
 import Signup from './components/Signup';
-import api from './api/api';
+import { useAuth } from './context/AuthContext';
+import { courses, departments } from './data/courses';
+import './App.css';
 
-function App() {
-  const [courses, setCourses] = useState([]);
-  const [error, setError] = useState('');
-  const { user, logout } = useAuth();
-  const [filter, setFilter] = useState({ department: '', gradLevel: '' });
+const Stars = ({ rating }) => (
+  <span className="stars" aria-label={`${rating} out of 5 stars`}>
+    {[1, 2, 3, 4, 5].map((star) => <span key={star} className={star <= Math.round(rating) ? 'star filled' : 'star'}>★</span>)}
+  </span>
+);
 
-  useEffect(() => {
-    api.get('/courses')
-      .then(response => {
-        setCourses(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching courses:', error);
-        setError('Failed to load courses.');
-      });
-  }, []);
-
-  const filteredCourses = courses.filter(course => {
-    return (
-      (filter.department === '' || course.department === filter.department) &&
-      (filter.gradLevel === '' || course.gradLevel === filter.gradLevel)
-    );
-  });
+function Home() {
+  const [search, setSearch] = useState('');
+  const [department, setDepartment] = useState('');
+  const [level, setLevel] = useState('');
+  const filteredCourses = useMemo(() => courses.filter((course) => {
+    const query = search.toLowerCase();
+    return (!query || `${course.name} ${course.code} ${course.professor}`.toLowerCase().includes(query))
+      && (!department || course.department === department)
+      && (!level || course.gradLevel === level);
+  }), [search, department, level]);
 
   return (
-    <>
-      <Header />
-
-      {user && (
-        <div className="logout-container">
-          <button onClick={logout} className="logout-btn">
-            Logout
-          </button>
+    <main>
+      <section className="hero">
+        <div className="hero-copy">
+          <span className="eyebrow">THE STUDENT-LED CATALOG</span>
+          <h1>Find your next<br /><em>favorite</em> class.</h1>
+          <p>Real experiences from students, made searchable. Discover courses that fit how you want to learn.</p>
+          <a className="button button-light" href="#catalog">Explore the catalog <span>↓</span></a>
         </div>
-      )}
+        <div className="hero-art" aria-hidden="true">
+          <div className="orbit orbit-one" /><div className="orbit orbit-two" />
+          <div className="floating-note note-one">↗  4.9 rated</div>
+          <div className="floating-note note-two">✦ student favorite</div>
+          <div className="hero-stamp">CEE<span>✳</span></div>
+        </div>
+      </section>
 
-      <div className="content">
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route
-            path="/"
-            element={
-              <>
-                <h1>Available Courses</h1>
-                <div className="filters">
-                  <select onChange={(e) => setFilter({ ...filter, department: e.target.value })}>
-                    <option value="">All Departments</option>
-                    <option value="CS">Computer Science</option>
-                    <option value="IT">Information Technology</option>
-                    <option value="AI">Artificial Intelligence</option>
-                    <option value="Business">Business</option>
-                    <option value="ECE">Electronics</option>
-                  </select>
-
-                  <select onChange={(e) => setFilter({ ...filter, gradLevel: e.target.value })}>
-                    <option value="">All Levels</option>
-                    <option value="Undergraduate">Undergraduate</option>
-                    <option value="Graduate">Graduate</option>
-                  </select>
-                </div>
-
-                {courses.length === 0 ? (
-                  <p>{error || 'No courses available. Check back later!'}</p>
-                ) : (
-                  <ul>
-                    {filteredCourses.map(course => (
-                      <li key={course._id}>
-                        <Link to={`/courses/${course._id}`}>{course.name}</Link>
-                        <div className="course-rating">
-                          {[...Array(5)].map((_, i) => (
-                            <span key={i} className={i < course.rating ? 'filled' : 'empty'}>★</span>
-                          ))}
-                        </div>
-                        <div className="course-tags">
-                          {course.rating > 4.8 && <span className="badge top-rated">Top Rated</span>}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </>
-            }
-          />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/welcome" element={<Welcome />} />
-          <Route path="/courses/:id" element={<CourseDetails />} />
-        </Routes>
-      </div>
-    </>
+      <section className="catalog-section" id="catalog">
+        <div className="section-heading">
+          <div><span className="eyebrow">BROWSE THE CATALOG</span><h2>Courses worth talking about.</h2></div>
+          <span className="course-count">{filteredCourses.length} of {courses.length} courses</span>
+        </div>
+        <div className="search-bar">
+          <span className="search-icon">⌕</span>
+          <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search courses, professors, or codes..." />
+          <select value={department} onChange={(event) => setDepartment(event.target.value)} aria-label="Filter by department">
+            <option value="">All departments</option>
+            {departments.map((item) => <option key={item} value={item}>{item}</option>)}
+          </select>
+          <select value={level} onChange={(event) => setLevel(event.target.value)} aria-label="Filter by level">
+            <option value="">All levels</option><option value="Undergraduate">Undergraduate</option><option value="Graduate">Graduate</option>
+          </select>
+        </div>
+        {filteredCourses.length === 0 ? <div className="empty-state"><span>◌</span><h3>No courses found</h3><p>Try a different search or clear your filters.</p></div> : (
+          <div className="course-grid">
+            {filteredCourses.map((course) => (
+              <Link className="course-card" to={`/courses/${course.id}`} key={course.id}>
+                <div className={`card-art ${course.accent}`}><span>{course.code}</span><strong>{course.name.split(' ').map((word) => word[0]).join('')}</strong></div>
+                <div className="card-body"><div className="card-meta"><span>{course.department}</span><span>{course.gradLevel}</span></div><h3>{course.name}</h3><p>{course.description}</p><div className="card-footer"><Stars rating={course.rating} /><strong>{course.rating}</strong><span>{course.reviews} reviews</span><span className="arrow">↗</span></div></div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </section>
+    </main>
   );
+}
+
+function App() {
+  const { user } = useAuth();
+  return <><Header /><Routes><Route path="/" element={<Home />} /><Route path="/login" element={<Login />} /><Route path="/signup" element={<Signup />} /><Route path="/profile" element={<Profile />} /><Route path="/courses/:id" element={<CourseDetails />} /><Route path="*" element={<Home />} /></Routes><footer><span>CEE ✳</span><span>Built by students, for students.</span><span>{user ? `Signed in as ${user.name}` : 'Share your course experience'}</span></footer></>;
 }
 
 export default App;

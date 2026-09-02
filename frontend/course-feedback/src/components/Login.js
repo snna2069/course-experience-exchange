@@ -1,88 +1,14 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import api from '../api/api';
 import './Login.css';
 
-const LoginPage = () => {
-  const { login, logout, user } = useAuth();
+const Login = () => {
+  const { user, login, logout } = useAuth();
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setError('');
-    try {
-      const response = await api.post('/auth/login', { email, password });
-      login(response.data.user, response.data.token);
-    } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
-    }
-  };
-
-  const handleLogout = () => {
-    logout();
-  };
-
-  return (
-    <div className="login-page-wrapper">
-      {user ? (
-        <div className="welcome-message-container">
-          <h2>Welcome, {user.email}!</h2>
-          <p>Have a great time exploring courses and sharing your reviews.</p>
-          <p>Happy Learning!</p>
-          <button className="logout-btn" onClick={handleLogout}>
-            Logout
-          </button>
-        </div>
-      ) : (
-        <div className="login-page-container">
-          <div className="login-form-container">
-            <h2>Course Experience Exchange</h2>
-            <p>Log in to continue</p>
-
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-
-            <form onSubmit={handleLogin}>
-              <div className="input-container">
-                <label htmlFor="email">Email Address</label>
-                <input
-                  type="email"
-                  id="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="input-container">
-                <label htmlFor="password">Password</label>
-                <input
-                  type="password"
-                  id="password"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-              <button type="submit" className="login-btn">
-                Login
-              </button>
-            </form>
-
-            <div className="toggle-form">
-              <p>Don't have an account?</p>
-              <Link to="/signup" className="toggle-btn">
-                Sign Up
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+  if (user) return <main className="auth-page"><div className="auth-card"><span className="auth-symbol">✳</span><span className="eyebrow">YOUR SPACE</span><h1>Welcome back,<br /><em>{user.name}.</em></h1><p>Your course notes and recommendations are ready.</p><button className="auth-button" onClick={() => navigate('/')}>Explore courses ↗</button><button className="text-button" onClick={logout}>Log out</button></div></main>;
+  const submit = (event) => { event.preventDefault(); login({ id: `demo-${Date.now()}`, name: email.split('@')[0] || 'Student', email }); navigate('/'); };
+  return <main className="auth-page"><div className="auth-card"><span className="auth-symbol">✳</span><span className="eyebrow">WELCOME BACK</span><h1>Find a class<br /><em>you'll love.</em></h1><p>Sign in to share notes and keep track of your discoveries.</p><form onSubmit={submit}><label>Email address<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@university.edu" required /></label><label>Password<input type="password" placeholder="••••••••" required /></label><button className="auth-button" type="submit">Continue ↗</button></form><div className="auth-switch">New here? <Link to="/signup">Create an account</Link></div></div></main>;
 };
-
-export default LoginPage;
+export default Login;
